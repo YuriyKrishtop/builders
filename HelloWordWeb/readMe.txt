@@ -20,3 +20,5 @@ ant war
 #Find ~/HelloWordWeb/buid/HelloWordWeb.war
 #Command for run tests:
 ant junit
+
+extra mile: for ant-building realised automatic downloading from central maven repository

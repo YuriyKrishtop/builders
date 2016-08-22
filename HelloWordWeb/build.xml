@@ -7,9 +7,9 @@
     <property name="test.src.dir" value="src/test/java"/>
 
     <path id="classpath.test">
-         <pathelement location="lib/junit-4.12.jar"/>
-         <pathelement location="lib/hamcrest-core-1.3.jar"/>
-         <pathelement location="${main.build.dir}"/>
+        <pathelement location="lib/junit-4.12.jar"/>
+        <pathelement location="lib/hamcrest-core-1.3.jar"/>
+        <pathelement location="${main.build.dir}"/>
     </path>
 	
 	<path id="compile.classpath">
@@ -18,12 +18,16 @@
 		</fileset>
 	</path>
 	
-  <target name="compile">
-    <mkdir dir="${main.build.dir}"/>
-    <javac srcdir="${main.src.dir}" destdir="${main.build.dir}" includeantruntime="false">
-		<classpath refid="compile.classpath"/>
-	</javac>
-  </target>
+    <target name="compile">
+		<mkdir dir="lib/"/>
+		<mkdir dir="${main.build.dir}"/>
+		<get src="http://central.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" dest="lib/hamcrest-core-1.3.jar" usetimestamp="true" />
+		<get src="http://central.maven.org/maven2/junit/junit/4.12/junit-4.12.jar" dest="lib/junit-4.12.jar" usetimestamp="true" />
+		<get src="http://central.maven.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar" dest="lib/javax.servlet-api-3.1.0.jar" usetimestamp="true" />
+		<javac srcdir="${main.src.dir}" destdir="${main.build.dir}" includeantruntime="false">
+			<classpath refid="compile.classpath"/>
+		</javac>
+    </target>
   
   	<target name="war" depends="clean,compile">
 		<war destfile="build/HelloWordWeb.war" webxml="src/main/webapp/WEB-INF/web.xml">
@@ -33,28 +37,29 @@
 		</war>
 	</target>
 
-  <target name="test-compile" depends="compile">
-    <mkdir dir="${test.build.dir}"/>
-    <javac srcdir="${test.src.dir}" destdir="${test.build.dir}" includeantruntime="false">
-        <classpath refid="classpath.test"/>
-    </javac>
-  </target>
+	<target name="test-compile" depends="compile">
+		<mkdir dir="${test.build.dir}"/>
+		<javac srcdir="${test.src.dir}" destdir="${test.build.dir}" includeantruntime="false">
+			<classpath refid="classpath.test"/>
+		</javac>
+	</target>
 
-  <target name="junit" depends="test-compile">
-    <junit printsummary="on" haltonfailure="yes" fork="true">
-        <classpath>
-          <path refid="classpath.test"/>
-          <pathelement location="${test.build.dir}"/>
-        </classpath>
-        <formatter type="brief" usefile="false" />
-        <batchtest>
-            <fileset dir="${test.src.dir}" includes="**/*Test.java" />
-        </batchtest>
-    </junit>
-  </target>
-  
-  <target name="clean">
+	<target name="junit" depends="test-compile">
+		<junit printsummary="on" haltonfailure="yes" fork="true">
+			<classpath>
+			    <path refid="classpath.test"/>
+			    <pathelement location="${test.build.dir}"/>
+			</classpath>
+			<formatter type="brief" usefile="false" />
+			<batchtest>
+				<fileset dir="${test.src.dir}" includes="**/*Test.java" />
+			</batchtest>
+		</junit>
+	</target>
+	  
+    <target name="clean">
 		<delete dir="build" />
+		<delete dir="lib" />
 	</target>
 	
 </project>

@@ -14,7 +14,7 @@ public class UserBeansTest {
         UserBean userBean = new UserBean();
         userBean.setName("John");
         userBean.setSurname("Smith");
-        assertEquals("John1", userBean.getName());
+        assertEquals("John", userBean.getName());
         assertEquals("Smith", userBean.getSurname());
     }
 }
