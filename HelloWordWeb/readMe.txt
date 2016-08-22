@@ -17,6 +17,6 @@ gradle clean build -x test
 #Ant
 #Command for build:
 ant war
-#Find ~/HelloWordWeb/buidAnt/HelloWordWeb.war
+#Find ~/HelloWordWeb/buid/HelloWordWeb.war
 #Command for run tests:
 ant junit

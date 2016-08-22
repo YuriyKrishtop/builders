@@ -1,56 +1,60 @@
 <?xml version="1.0" ?> 
 <project name="HelloWordWeb" default="war">
 
+	<property name="main.build.dir" value="build/main"/>
+    <property name="main.src.dir" value="src/main/java"/>
+    <property name="test.build.dir" value="build/test"/>
+    <property name="test.src.dir" value="src/test/java"/>
+
+    <path id="classpath.test">
+         <pathelement location="lib/junit-4.12.jar"/>
+         <pathelement location="lib/hamcrest-core-1.3.jar"/>
+         <pathelement location="${main.build.dir}"/>
+    </path>
+	
 	<path id="compile.classpath">
 		<fileset dir="lib/">
 			<include name="*.jar"/>
 		</fileset>
 	</path>
 	
-	<path id="application" location="buildAnt/jar/apl.jar"/>
-	
-	<target name="init">
-		<mkdir dir="buildAnt/classes"/>
-	</target>
-	
-	<target name="compile" depends="init" >
-		<javac destdir="buildAnt/classes" debug="true" srcdir="src/">
-			<classpath refid="compile.classpath"/>
-		</javac>
-	</target>
-	
-	<target name="war" depends="clean,compile">
-		<war destfile="buildAnt/HelloWordWeb.war" webxml="src/main/webapp/WEB-INF/web.xml">
+  <target name="compile">
+    <mkdir dir="${main.build.dir}"/>
+    <javac srcdir="${main.src.dir}" destdir="${main.build.dir}" includeantruntime="false">
+		<classpath refid="compile.classpath"/>
+	</javac>
+  </target>
+  
+  	<target name="war" depends="clean,compile">
+		<war destfile="build/HelloWordWeb.war" webxml="src/main/webapp/WEB-INF/web.xml">
 			<fileset dir="src/main/webapp/"/>
 			<lib dir="lib/"/>
-			<classes dir="buildAnt/classes"/>
+			<classes dir="build/main" includes="**/*.class" />
 		</war>
 	</target>
-	
-	<target name="junit" depends="jar">
-        <junit printsummary="yes">
-            <classpath>
-                <path refid="compile.classpath"/>
-				<path refid="application"/>
-            </classpath>
-            
-            <batchtest fork="yes">
-                <fileset dir="src/" includes="*Test.java"/>
-            </batchtest>
-        </junit>
-    </target>
-	
-	<target name="jar" depends="compile">
-        <mkdir dir="buildAnt/jar"/>
-        <jar destfile="buildAnt/jar/apl.jar" basedir="buildAnt/classes">
-            <manifest>
-                <attribute name="Main-Class" value="HelloWordWeb"/>
-            </manifest>
-        </jar>
-    </target>
-	
-	<target name="clean">
-		<delete dir="buildAnt" />
+
+  <target name="test-compile" depends="compile">
+    <mkdir dir="${test.build.dir}"/>
+    <javac srcdir="${test.src.dir}" destdir="${test.build.dir}" includeantruntime="false">
+        <classpath refid="classpath.test"/>
+    </javac>
+  </target>
+
+  <target name="junit" depends="test-compile">
+    <junit printsummary="on" haltonfailure="yes" fork="true">
+        <classpath>
+          <path refid="classpath.test"/>
+          <pathelement location="${test.build.dir}"/>
+        </classpath>
+        <formatter type="brief" usefile="false" />
+        <batchtest>
+            <fileset dir="${test.src.dir}" includes="**/*Test.java" />
+        </batchtest>
+    </junit>
+  </target>
+  
+  <target name="clean">
+		<delete dir="build" />
 	</target>
 	
 </project>
