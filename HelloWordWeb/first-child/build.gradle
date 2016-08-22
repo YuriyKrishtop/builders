@@ -1,0 +1,16 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = 'com.example.Main'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile 'log4j:log4j:1.2.17'
+}
+
+jar {
+	manifest.attributes('Main-Class': mainClassName);
+}
